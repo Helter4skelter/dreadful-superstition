@@ -256,7 +256,7 @@
           <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
           <span>Lihat Detail</span>
         </button>
-        <a id="preview-external-link" href="https://wa.me/6281299961001" target="_blank" rel="noopener noreferrer" class="py-2 sm:py-2.5 px-3 rounded-xl pill-dark font-bold text-xs flex items-center justify-center gap-1.5 transition hover:opacity-90 active:scale-95">
+        <a id="preview-external-link" href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" class="py-2 sm:py-2.5 px-3 rounded-xl pill-dark font-bold text-xs flex items-center justify-center gap-1.5 transition hover:opacity-90 active:scale-95">
           <span id="preview-link-label">Buka Link</span>
           <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
         </a>
@@ -332,9 +332,9 @@
       <div class="w-12 h-12 rounded-2xl bg-stone-900 text-amber-400 flex items-center justify-center mx-auto mb-3">
         <i data-lucide="lock" class="w-6 h-6"></i>
       </div>
-      <h3 class="font-nautical text-xl font-black tracking-tight">Ciao! Captain</h3>
-      <p class="text-xs text-stone-500 mt-1">Hola!</p>
-      <input type="password" id="admin-pin-input" maxlength="10" placeholder="PIN (default: 0000)" class="w-full mt-4 px-4 py-2.5 rounded-xl border border-stone-300 bg-white text-center font-mono text-base font-bold focus:outline-none focus:border-amber-600" onkeydown="if(event.key==='Enter') verifyAdminPin()">
+      <h3 class="font-nautical text-xl font-black tracking-tight">Captain's Cabin</h3>
+      <p class="text-xs text-stone-500 mt-1">Masukkan PIN Rahasia untuk mengedit konten website</p>
+      <input type="password" id="admin-pin-input" maxlength="10" placeholder="PIN (default: 1234)" class="w-full mt-4 px-4 py-2.5 rounded-xl border border-stone-300 bg-white text-center font-mono text-base font-bold focus:outline-none focus:border-amber-600" onkeydown="if(event.key==='Enter') verifyAdminPin()">
       <p id="admin-pin-error" class="text-xs text-red-600 font-semibold mt-2 hidden">PIN salah! Coba lagi.</p>
       <div class="grid grid-cols-2 gap-2 mt-4">
         <button onclick="closeAdminPinModal()" class="py-2.5 rounded-xl bg-stone-200 text-stone-700 font-bold text-xs">Batal</button>
@@ -379,22 +379,23 @@
           Reset Default
         </button>
         <div class="flex items-center gap-2 ml-auto">
-          <button onclick="applyAdminChanges(true)" class="px-4 py-2.5 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-900 font-bold text-xs transition">
-            Simpan & Preview
-          </button>
-          <button onclick="downloadUpdatedHtml()" class="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-md transition">
-            <i data-lucide="download" class="w-3.5 h-3.5"></i>
-            <span>Download index.html</span>
+          <span id="cloud-sync-badge" class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-200 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Cloud Sync Aktif
+          </span>
+          <button id="btn-save-cloud" onclick="applyAdminChanges(true)" class="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-md transition">
+            <i data-lucide="cloud-upload" class="w-3.5 h-3.5"></i>
+            <span>Simpan & Terbitkan ke Semua Device</span>
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- SITE DATA CONFIG (AUTO-UPDATED ON DOWNLOAD) -->
+  <!-- SITE DATA CONFIG -->
   <script id="site-data-script">
     const DEFAULT_SITE_DATA = {
-      adminPin: '090925',
+      adminPin: '1234',
       brandName: 'Captain Reztroid',
       statusHint: 'Klik pulau atau air laut untuk berlayar',
       customMp3Url: '',
@@ -525,6 +526,112 @@
     };
   </script>
 
+  <!-- CLOUD REAL-TIME SYNC MODULE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // =========================================================================
+    // KONFIGURASI FIREBASE MILIK CAPTAIN REZTROID (SIAP VERCEL / GITHUB)
+    // =========================================================================
+    const MANUAL_FIREBASE_CONFIG = {
+      apiKey: "AIzaSyCVcESM6jzI1RIGCmyZVFtKHbR31CMSYRI",
+      authDomain: "captain-reztroid.firebaseapp.com",
+      projectId: "captain-reztroid",
+      storageBucket: "captain-reztroid.firebasestorage.app",
+      messagingSenderId: "544622474659",
+      appId: "1:544622474659:web:09a4754dd34d7f69be1616",
+      measurementId: "G-TR0PNST065"
+    };
+
+    let db = null;
+    let auth = null;
+    let currentUser = null;
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'captain-reztroid-portfolio';
+
+    function updateSyncBadgeUI(isConnected, text) {
+      const badge = document.getElementById('cloud-sync-badge');
+      if (!badge) return;
+      if (isConnected) {
+        badge.className = 'text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-200 flex items-center gap-1.5';
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>${text || 'Cloud Sync Aktif'}`;
+      } else {
+        badge.className = 'text-[11px] font-semibold text-amber-700 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1.5';
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span>${text || 'Cloud Belum Diatur'}`;
+      }
+    }
+
+    async function initCloudSync() {
+      try {
+        let firebaseConfig = null;
+        let isManualConfig = false;
+        if (MANUAL_FIREBASE_CONFIG.apiKey && MANUAL_FIREBASE_CONFIG.projectId) {
+          firebaseConfig = MANUAL_FIREBASE_CONFIG;
+          isManualConfig = true;
+        } else if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+          firebaseConfig = JSON.parse(__firebase_config);
+        }
+
+        if (!firebaseConfig) {
+          updateSyncBadgeUI(false, 'Isi Config Firebase Dulu');
+          return;
+        }
+
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+
+        if (!isManualConfig && typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          const cred = await signInWithCustomToken(auth, __initial_auth_token);
+          currentUser = cred.user;
+        } else {
+          const cred = await signInAnonymously(auth);
+          currentUser = cred.user;
+        }
+
+        if (!currentUser) {
+          updateSyncBadgeUI(false, 'Gagal Login Cloud');
+          return;
+        }
+
+        updateSyncBadgeUI(true, 'Cloud Sync Aktif');
+
+        // Dengarkan perubahan data secara real-time di seluruh device
+        const configDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'site_config', 'main');
+        onSnapshot(configDocRef, (snap) => {
+          if (snap.exists() && snap.data().payload) {
+            const remoteData = JSON.parse(snap.data().payload);
+            window.syncSiteDataFromCloud(remoteData);
+          }
+        }, (err) => {
+          console.warn('Cloud listener warning:', err);
+          updateSyncBadgeUI(false, 'Cek Rules Firestore');
+        });
+      } catch (e) {
+        console.warn('Cloud sync fallback to local:', e);
+        updateSyncBadgeUI(false, 'Cloud Belum Terhubung');
+      }
+    }
+
+    window.saveSiteDataToCloud = async function (dataObj) {
+      if (!db || !currentUser) return false;
+      try {
+        const configDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'site_config', 'main');
+        await setDoc(configDocRef, {
+          payload: JSON.stringify(dataObj),
+          updatedAt: Date.now()
+        });
+        return true;
+      } catch (e) {
+        console.error('Failed to save to cloud:', e);
+        return false;
+      }
+    };
+
+    initCloudSync();
+  </script>
+
   <script>
     // ============================================================================
     // PROTEKSI ANTI-INSPECT (OTOMATIS NONAKTIF SAAT ADMIN PANEL DIBUKA)
@@ -572,14 +679,23 @@
     // DATA MANAGEMENT & DYNAMIC RENDERER
     // ============================================================================
     let SITE_DATA = JSON.parse(JSON.stringify(DEFAULT_SITE_DATA));
-    try {
-      const savedDraft = localStorage.getItem('reztroid_site_draft_v1');
-      if (savedDraft) {
-        SITE_DATA = Object.assign({}, SITE_DATA, JSON.parse(savedDraft));
-      }
-    } catch (e) {}
-
     let PIRATE_ISLANDS = {};
+
+    window.syncSiteDataFromCloud = function (remoteData) {
+      SITE_DATA = Object.assign({}, JSON.parse(JSON.stringify(DEFAULT_SITE_DATA)), remoteData);
+      rebuildPirateIslandsFromData();
+      if (typeof activeIslandId !== 'undefined' && PIRATE_ISLANDS[activeIslandId]) {
+        updateActiveNavUI(activeIslandId, PIRATE_ISLANDS[activeIslandId].name);
+        showPreviewCard(activeIslandId);
+        // Jika modal detail pulau sedang terbuka, perbarui isinya seketika
+        const modal = document.getElementById('island-modal');
+        if (modal && modal.classList.contains('opacity-100')) {
+          document.getElementById('modal-tag').textContent = PIRATE_ISLANDS[activeIslandId].badge;
+          document.getElementById('modal-body').innerHTML = PIRATE_ISLANDS[activeIslandId].html;
+          lucide.createIcons();
+        }
+      }
+    };
 
     function rebuildPirateIslandsFromData() {
       // Update Header & Pins
@@ -1008,7 +1124,7 @@
     function collectCurrentAdminTabInputs() {
       if (currentAdminTab === 'general') {
         SITE_DATA.brandName = document.getElementById('adm-brand').value;
-        SITE_DATA.adminPin = document.getElementById('adm-pin').value || '090925';
+        SITE_DATA.adminPin = document.getElementById('adm-pin').value || '1234';
         SITE_DATA.statusHint = document.getElementById('adm-status').value;
         SITE_DATA.customMp3Url = document.getElementById('adm-mp3').value.trim();
         SITE_DATA.pins = {
@@ -1110,61 +1226,45 @@
       switchAdminTab('kontak');
     }
 
-    function applyAdminChanges(showToast = false) {
+    async function applyAdminChanges(showToast = false) {
       collectCurrentAdminTabInputs();
-      try {
-        localStorage.setItem('reztroid_site_draft_v1', JSON.stringify(SITE_DATA));
-      } catch (e) {}
+      const saveBtn = document.getElementById('btn-save-cloud');
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span>Menyimpan ke Cloud...</span>';
+      }
+
       rebuildPirateIslandsFromData();
       updateActiveNavUI(activeIslandId, PIRATE_ISLANDS[activeIslandId].name);
       showPreviewCard(activeIslandId);
+
+      let synced = false;
+      if (typeof window.saveSiteDataToCloud === 'function') {
+        synced = await window.saveSiteDataToCloud(SITE_DATA);
+      }
+
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i data-lucide="cloud-upload" class="w-3.5 h-3.5"></i><span>Simpan & Terbitkan ke Semua Device</span>';
+        lucide.createIcons();
+      }
+
       if (showToast) {
         closeAdminEditor();
-        document.getElementById('ship-status-text').textContent = 'Perubahan disimpan! Klik Download index.html untuk update permanen.';
+        document.getElementById('ship-status-text').textContent = synced
+          ? 'Berhasil! Semua device otomatis terupdate secara real-time.'
+          : 'Tersimpan di sesi ini. Pastikan koneksi internet aktif untuk sinkronisasi.';
       }
     }
 
-    function resetDefaultSiteData() {
-      localStorage.removeItem('reztroid_site_draft_v1');
+    async function resetDefaultSiteData() {
       SITE_DATA = JSON.parse(JSON.stringify(DEFAULT_SITE_DATA));
       rebuildPirateIslandsFromData();
       switchAdminTab(currentAdminTab);
       showPreviewCard(activeIslandId);
-    }
-
-    function downloadUpdatedHtml() {
-      collectCurrentAdminTabInputs();
-      rebuildPirateIslandsFromData();
-
-      // Clone current DOM and bake updated SITE_DATA into #site-data-script
-      const docClone = document.documentElement.cloneNode(true);
-      const dataScript = docClone.querySelector('#site-data-script');
-      if (dataScript) {
-        dataScript.textContent = `\n    const DEFAULT_SITE_DATA = ${JSON.stringify(SITE_DATA, null, 2)};\n  `;
+      if (typeof window.saveSiteDataToCloud === 'function') {
+        await window.saveSiteDataToCloud(SITE_DATA);
       }
-
-      // Reset transient modal classes in exported HTML
-      const adminModal = docClone.querySelector('#admin-editor-modal');
-      if (adminModal) {
-        adminModal.classList.add('pointer-events-none', 'opacity-0');
-        adminModal.classList.remove('pointer-events-auto', 'opacity-100');
-      }
-      const pinModal = docClone.querySelector('#admin-pin-modal');
-      if (pinModal) {
-        pinModal.classList.add('pointer-events-none', 'opacity-0');
-        pinModal.classList.remove('pointer-events-auto', 'opacity-100');
-      }
-
-      const fullHtml = '<!DOCTYPE html>\n' + docClone.outerHTML;
-      const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'index.html';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
     }
 
     // ============================================================================
