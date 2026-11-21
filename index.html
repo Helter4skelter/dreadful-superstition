@@ -41,6 +41,11 @@
       -webkit-touch-callout: none;
     }
 
+    input, textarea, select {
+      user-select: text !important;
+      -webkit-user-select: text !important;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
@@ -93,7 +98,6 @@
       transition: all 0.25s ease;
     }
 
-    /* 3D Screen Space Island Pins */
     .island-pin {
       position: fixed;
       top: 0;
@@ -112,7 +116,6 @@
       transform: translate(-50%, -50%) scale(0.96);
     }
 
-    /* Equalizer Bars */
     @keyframes eqPulse {
       0%, 100% { height: 3px; }
       50% { height: 11px; }
@@ -141,39 +144,39 @@
   <div id="pins-container" class="fixed inset-0 pointer-events-none z-10 overflow-hidden">
     <button id="pin-haven" onclick="sailToIsland('haven', true)" class="island-pin pill-surface px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-bold">
       <span class="w-2 h-2 rounded-full bg-amber-600 shrink-0"></span>
-      <span>About</span>
-      <span class="opacity-55 font-medium hidden sm:inline">Reztroid</span>
+      <span id="pin-haven-main">About</span>
+      <span id="pin-haven-sub" class="opacity-55 font-medium hidden sm:inline">Reztroid</span>
     </button>
 
     <button id="pin-vault" onclick="sailToIsland('vault', true)" class="island-pin pill-surface px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-bold">
       <span class="w-2 h-2 rounded-full bg-amber-600 shrink-0"></span>
-      <span>Pricelist</span>
-      <span class="opacity-55 font-medium hidden sm:inline">Katalog</span>
+      <span id="pin-vault-main">Pricelist</span>
+      <span id="pin-vault-sub" class="opacity-55 font-medium hidden sm:inline">Katalog</span>
     </button>
 
     <button id="pin-log" onclick="sailToIsland('log', true)" class="island-pin pill-surface px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-bold">
       <span class="w-2 h-2 rounded-full bg-amber-600 shrink-0"></span>
-      <span>Testimoni</span>
-      <span class="opacity-55 font-medium hidden sm:inline">Review</span>
+      <span id="pin-log-main">Testimoni</span>
+      <span id="pin-log-sub" class="opacity-55 font-medium hidden sm:inline">Review</span>
     </button>
 
     <button id="pin-signal" onclick="sailToIsland('signal', true)" class="island-pin pill-surface px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-bold">
       <span class="w-2 h-2 rounded-full bg-amber-600 shrink-0"></span>
-      <span>Order</span>
-      <span class="opacity-55 font-medium hidden sm:inline">Kontak</span>
+      <span id="pin-signal-main">Order</span>
+      <span id="pin-signal-sub" class="opacity-55 font-medium hidden sm:inline">Kontak</span>
     </button>
   </div>
 
   <!-- Top Navigation Bar (Responsive Mobile & Desktop) -->
   <header class="fixed top-0 inset-x-0 z-30 pt-[max(0.6rem,env(safe-area-inset-top))] px-2.5 pb-2 sm:p-5 flex flex-col items-center pointer-events-none gap-1 sm:gap-2">
     <div class="w-full max-w-4xl flex items-center justify-between gap-1.5 pointer-events-auto">
-      <button onclick="sailToIsland('haven', true)" class="pill-surface px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full flex items-center gap-2 transition hover:scale-[1.02] active:scale-95 group shrink-0">
+      <button id="brand-logo-btn" onclick="handleBrandLogoClick()" class="pill-surface px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full flex items-center gap-2 transition hover:scale-[1.02] active:scale-95 group shrink-0">
         <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-stone-900 text-amber-400 flex items-center justify-center transition group-hover:rotate-12 shrink-0">
           <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
             <path d="M12 2C7.58 2 4 5.58 4 10c0 2.21.9 4.21 2.35 5.65.3.3.65.65.65 1.05v1.3c0 .55.45 1 1 1h1v1c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-1h1c.55 0 1-.45 1-1v-1.3c0-.4.35-.75.65-1.05C20.1 14.21 21 12.21 21 10c0-4.42-3.58-8-8-8zm-3 8a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0z"/>
           </svg>
         </div>
-        <span class="font-nautical font-black text-xs sm:text-sm tracking-tight">Captain Reztroid</span>
+        <span id="brand-title-text" class="font-nautical font-black text-xs sm:text-sm tracking-tight">Captain Reztroid</span>
       </button>
 
       <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
@@ -197,10 +200,10 @@
     </div>
 
     <nav class="pointer-events-auto pill-surface p-1 rounded-full flex items-center justify-center gap-0.5 sm:gap-1 text-[11px] sm:text-xs font-semibold overflow-x-auto no-scrollbar max-w-full">
-      <button onclick="sailToIsland('haven', true)" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full hover:bg-black/5 transition whitespace-nowrap" data-nav="haven">About</button>
-      <button onclick="sailToIsland('vault', true)" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full hover:bg-black/5 transition whitespace-nowrap" data-nav="vault">Pricelist</button>
-      <button onclick="sailToIsland('log', true)" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full hover:bg-black/5 transition whitespace-nowrap" data-nav="log">Testimoni</button>
-      <button onclick="sailToIsland('signal', true)" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full hover:bg-black/5 transition whitespace-nowrap" data-nav="signal">Order & Kontak</button>
+      <button onclick="sailToIsland('haven', true)" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full hover:bg-black/5 transition whitespace-nowrap" data-nav="haven" id="nav-haven">About</button>
+      <button onclick="sailToIsland('vault', true)" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full hover:bg-black/5 transition whitespace-nowrap" data-nav="vault" id="nav-vault">Pricelist</button>
+      <button onclick="sailToIsland('log', true)" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full hover:bg-black/5 transition whitespace-nowrap" data-nav="log" id="nav-log">Testimoni</button>
+      <button onclick="sailToIsland('signal', true)" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full hover:bg-black/5 transition whitespace-nowrap" data-nav="signal" id="nav-signal">Order & Kontak</button>
     </nav>
 
     <!-- Ship Status Hint -->
@@ -253,7 +256,7 @@
           <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
           <span>Lihat Detail</span>
         </button>
-        <a id="preview-external-link" href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" class="py-2 sm:py-2.5 px-3 rounded-xl pill-dark font-bold text-xs flex items-center justify-center gap-1.5 transition hover:opacity-90 active:scale-95">
+        <a id="preview-external-link" href="https://wa.me/6281299961001" target="_blank" rel="noopener noreferrer" class="py-2 sm:py-2.5 px-3 rounded-xl pill-dark font-bold text-xs flex items-center justify-center gap-1.5 transition hover:opacity-90 active:scale-95">
           <span id="preview-link-label">Buka Link</span>
           <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
         </a>
@@ -322,33 +325,232 @@
     </div>
   </div>
 
+  <!-- SECRET ADMIN PIN MODAL -->
+  <div id="admin-pin-modal" class="fixed inset-0 z-[60] pointer-events-none flex items-center justify-center p-4 opacity-0 transition-opacity duration-200">
+    <div onclick="closeAdminPinModal()" class="absolute inset-0 bg-black/65 backdrop-blur-sm"></div>
+    <div class="relative w-full max-w-xs bg-[#fbf8f1] text-stone-900 rounded-3xl p-6 shadow-2xl border border-stone-200 text-center">
+      <div class="w-12 h-12 rounded-2xl bg-stone-900 text-amber-400 flex items-center justify-center mx-auto mb-3">
+        <i data-lucide="lock" class="w-6 h-6"></i>
+      </div>
+      <h3 class="font-nautical text-xl font-black tracking-tight">Captain's Cabin</h3>
+      <p class="text-xs text-stone-500 mt-1">Masukkan PIN Rahasia untuk mengedit konten website</p>
+      <input type="password" id="admin-pin-input" maxlength="10" placeholder="PIN (default: 090925)" class="w-full mt-4 px-4 py-2.5 rounded-xl border border-stone-300 bg-white text-center font-mono text-base font-bold focus:outline-none focus:border-amber-600" onkeydown="if(event.key==='Enter') verifyAdminPin()">
+      <p id="admin-pin-error" class="text-xs text-red-600 font-semibold mt-2 hidden">PIN salah! Coba lagi.</p>
+      <div class="grid grid-cols-2 gap-2 mt-4">
+        <button onclick="closeAdminPinModal()" class="py-2.5 rounded-xl bg-stone-200 text-stone-700 font-bold text-xs">Batal</button>
+        <button onclick="verifyAdminPin()" class="py-2.5 rounded-xl bg-stone-900 text-amber-400 font-bold text-xs">Masuk</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECRET ADMIN VISUAL EDITOR DRAWER -->
+  <div id="admin-editor-modal" class="fixed inset-0 z-[70] pointer-events-none flex items-end sm:items-center justify-center p-0 sm:p-5 opacity-0 transition-opacity duration-200">
+    <div onclick="closeAdminEditor()" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+    <div class="relative w-full max-w-3xl max-h-[92dvh] bg-[#fbf8f1] text-stone-900 rounded-t-3xl sm:rounded-3xl shadow-2xl border border-stone-300 overflow-hidden flex flex-col">
+      <!-- Header -->
+      <div class="px-5 py-4 bg-stone-900 text-white flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-lg bg-amber-500 text-stone-950 flex items-center justify-center font-black text-xs">⚙️</span>
+          <div>
+            <h3 class="font-nautical text-base sm:text-lg font-black leading-none">Admin Panel Rahasia</h3>
+            <p class="text-[11px] text-stone-400 mt-0.5">Edit teks, harga & link beda-beda tanpa sentuh kode</p>
+          </div>
+        </div>
+        <button onclick="closeAdminEditor()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="px-4 py-2.5 bg-stone-200/70 border-b border-stone-300 flex gap-1.5 overflow-x-auto no-scrollbar shrink-0 text-xs font-bold">
+        <button onclick="switchAdminTab('general')" data-admintab="general" class="admin-tab-btn px-3 py-1.5 rounded-full bg-stone-900 text-white whitespace-nowrap">Umum & Musik</button>
+        <button onclick="switchAdminTab('about')" data-admintab="about" class="admin-tab-btn px-3 py-1.5 rounded-full bg-white text-stone-700 whitespace-nowrap">About</button>
+        <button onclick="switchAdminTab('pricelist')" data-admintab="pricelist" class="admin-tab-btn px-3 py-1.5 rounded-full bg-white text-stone-700 whitespace-nowrap">Pricelist (Multi-Link)</button>
+        <button onclick="switchAdminTab('testimoni')" data-admintab="testimoni" class="admin-tab-btn px-3 py-1.5 rounded-full bg-white text-stone-700 whitespace-nowrap">Testimoni</button>
+        <button onclick="switchAdminTab('kontak')" data-admintab="kontak" class="admin-tab-btn px-3 py-1.5 rounded-full bg-white text-stone-700 whitespace-nowrap">Order & Kontak</button>
+      </div>
+
+      <!-- Editor Body -->
+      <div id="admin-editor-body" class="p-5 overflow-y-auto space-y-4 text-xs flex-1"></div>
+
+      <!-- Footer Actions -->
+      <div class="p-4 bg-white border-t border-stone-200 flex flex-wrap items-center justify-between gap-2 shrink-0">
+        <button onclick="resetDefaultSiteData()" class="px-3.5 py-2.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 font-bold text-xs transition">
+          Reset Default
+        </button>
+        <div class="flex items-center gap-2 ml-auto">
+          <button onclick="applyAdminChanges(true)" class="px-4 py-2.5 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-900 font-bold text-xs transition">
+            Simpan & Preview
+          </button>
+          <button onclick="downloadUpdatedHtml()" class="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-md transition">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>Download index.html</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SITE DATA CONFIG (AUTO-UPDATED ON DOWNLOAD) -->
+  <script id="site-data-script">
+    const DEFAULT_SITE_DATA = {
+      adminPin: '090925',
+      brandName: 'Captain Reztroid',
+      statusHint: 'Klik pulau atau air laut untuk berlayar',
+      customMp3Url: '',
+      pins: {
+        havenMain: 'About',
+        havenSub: 'Reztroid',
+        vaultMain: 'Pricelist',
+        vaultSub: 'Katalog',
+        logMain: 'Testimoni',
+        logSub: 'Review',
+        signalMain: 'Order',
+        signalSub: 'Kontak'
+      },
+      haven: {
+        name: 'About · Reztroid',
+        badge: 'Markas Utama',
+        icon: '🏴‍☠️',
+        shortTitle: 'About Reztroid',
+        shortDesc: 'Markas utama Captain Reztroid. Kenali layanan kreatif, kualitas pengerjaan, dan keunggulan armada kami.',
+        highlights: ['⚡ Proses Cepat', '💎 Kualitas Premium', '🛡️ Bergaransi'],
+        linkLabel: 'Profil Instagram',
+        externalUrl: 'https://instagram.com/heyreztroid/',
+        modalTitle: 'Captain Reztroid',
+        modalSubtitle: 'Digital Creative & Trusted Service Armada',
+        modalBody: 'Selamat datang di pelabuhan resmi Captain Reztroid. Kami menyediakan layanan digital berkualitas tinggi dengan pengerjaan cepat, transparan, dan bergaransi penuh bagi setiap klien.',
+        stats: [
+          { value: '500+', label: 'Order Selesai' },
+          { value: '4.9★', label: 'Rating Klien' },
+          { value: '24/7', label: 'Fast Respon' }
+        ]
+      },
+      vault: {
+        name: 'Pricelist · Katalog',
+        badge: 'Katalog Harga',
+        icon: '💰',
+        shortTitle: 'Pricelist & Paket',
+        shortDesc: 'Daftar harga lengkap layanan Captain Reztroid. Pilih paket sesuai kebutuhanmu dengan harga transparan.',
+        highlights: ['📦 Paket Basic', '🔥 Paket Pro Fleet', '👑 Custom Order'],
+        linkLabel: 'Tanya / Order WA',
+        externalUrl: 'https://wa.me/6281299961001?text=Halo%20Captain%20Reztroid,%20saya%20ingin%20tanya%20pricelist',
+        modalTitle: 'Pricelist Layanan',
+        modalSubtitle: 'Pilih paket layanan terbaik dari Captain Reztroid',
+        packages: [
+          {
+            tag: 'Starter',
+            title: 'Paket Basic Corsair',
+            desc: 'Pengerjaan reguler, 2x revisi minor, file siap pakai.',
+            price: 'Rp 50K',
+            linkText: 'Pesan →',
+            url: 'https://wa.me/6281299961001?text=Halo%20Captain,%20saya%20mau%20pesan%20Paket%20Basic%2050K',
+            featured: false
+          },
+          {
+            tag: 'Best Seller',
+            title: 'Paket Captain Fleet',
+            desc: 'Prioritas ekspres, full garansi & revisi, bonus eksklusif.',
+            price: 'Rp 150K',
+            linkText: 'Pesan →',
+            url: 'https://wa.me/6281299961001?text=Halo%20Captain,%20saya%20mau%20pesan%20Paket%20Captain%20Fleet%20150K',
+            featured: true
+          },
+          {
+            tag: 'VIP Custom',
+            title: 'Paket Admiral Full Custom',
+            desc: 'Spesifikasi khusus sesuai request dari awal hingga tuntas.',
+            price: 'Rp 300K+',
+            linkText: 'Pesan →',
+            url: 'https://lapor-disini.vercel.app',
+            featured: false
+          }
+        ]
+      },
+      log: {
+        name: 'Testimoni · Review',
+        badge: 'Bukti & Review',
+        icon: '⭐',
+        shortTitle: 'Testimoni Pelanggan',
+        shortDesc: 'Kumpulan ulasan asli dan bukti kepuasan pelanggan yang telah berlayar bersama Captain Reztroid.',
+        highlights: ['⭐ 100% Trusted', '💬 Review Asli', '📸 Bukti Transaksi'],
+        linkLabel: 'Lihat Bukti Lengkap',
+        externalUrl: 'https://instagram.com/heyreztroid/',
+        modalTitle: 'Testimoni Pelanggan',
+        modalSubtitle: 'Apa kata mereka tentang layanan Captain Reztroid',
+        reviews: [
+          {
+            name: 'Raka Pratama',
+            stars: '★★★★★',
+            text: '"Gila sih pengerjaan cepet banget, admin ramah dan hasilnya jauh di atas ekspektasi. Recommended banget sama Captain Reztroid!"'
+          },
+          {
+            name: 'Nadia K.',
+            stars: '★★★★★',
+            text: '"Udah langganan 3 kali di sini nggak pernah kecewa. Harga terjangkau tapi kualitasnya beneran kelas kapten."'
+          },
+          {
+            name: 'Dimas Saputra',
+            stars: '★★★★★',
+            text: '"Fast respon meskipun chat malam-malam. Revisi langsung dikerjain saat itu juga. Mantap Reztroid!"'
+          }
+        ]
+      },
+      signal: {
+        name: 'Order · Kontak',
+        badge: 'Jalur Cepat',
+        icon: '🧭',
+        shortTitle: 'Order & Kontak',
+        shortDesc: 'Siap memesan atau ingin konsultasi gratis dulu? Hubungi Captain Reztroid langsung lewat WhatsApp atau sosial media.',
+        highlights: ['📱 WhatsApp Aktif', '📸 DM Instagram', '⚡ Respon Instan'],
+        linkLabel: 'Chat WhatsApp',
+        externalUrl: 'https://wa.me/6281299961001?text=Halo%20Captain%20Reztroid,%20saya%20ingin%20order',
+        modalTitle: 'Hubungi Captain Reztroid',
+        modalSubtitle: 'Klik salah satu jalur komunikasi resmi di bawah ini',
+        contacts: [
+          {
+            badge: 'Jalur Utama',
+            title: 'WhatsApp Order',
+            url: 'https://wa.me/6281299961001?text=Halo%20Captain%20Reztroid,%20saya%20ingin%20order',
+            colorClass: 'bg-emerald-600 text-white'
+          },
+          {
+            badge: 'Katalog & Update',
+            title: 'Instagram Resmi',
+            url: 'https://instagram.com/heyreztroid/',
+            colorClass: 'bg-stone-900 text-white'
+          }
+        ]
+      }
+    };
+  </script>
+
   <script>
     // ============================================================================
-    // PROTEKSI ANTI-INSPECT, ANTI-RIGHT CLICK & ANTI-DEVTOOLS SHORTCUTS
+    // PROTEKSI ANTI-INSPECT (OTOMATIS NONAKTIF SAAT ADMIN PANEL DIBUKA)
     // ============================================================================
+    let isAdminUnlocked = false;
+
     (function () {
-      // Blokir klik kanan di seluruh halaman
       document.addEventListener('contextmenu', function (e) {
+        if (isAdminUnlocked) return true;
         e.preventDefault();
         return false;
       });
 
-      // Blokir shortcut keyboard Inspect Element, View Source, dan Save Page
       document.addEventListener('keydown', function (e) {
+        if (isAdminUnlocked) return true;
         const key = e.key ? e.key.toUpperCase() : '';
-        // F12
         if (e.keyCode === 123 || key === 'F12') {
           e.preventDefault();
           e.stopPropagation();
           return false;
         }
-        // Ctrl+Shift+I / J / C / K (Windows/Linux) atau Cmd+Option+I / J / C / U (Mac)
         if ((e.ctrlKey || e.metaKey) && (e.shiftKey || e.altKey) && ['I', 'J', 'C', 'K'].includes(key)) {
           e.preventDefault();
           e.stopPropagation();
           return false;
         }
-        // Ctrl+U (View Source) atau Ctrl+S (Save HTML)
         if ((e.ctrlKey || e.metaKey) && ['U', 'S'].includes(key)) {
           e.preventDefault();
           e.stopPropagation();
@@ -356,8 +558,8 @@
         }
       }, true);
 
-      // Proteksi tambahan: Bersihkan console & trap debugger jika DevTools dibuka paksa
       setInterval(function () {
+        if (isAdminUnlocked) return;
         const start = performance.now();
         debugger;
         if (performance.now() - start > 100) {
@@ -367,198 +569,603 @@
     })();
 
     // ============================================================================
-    // KONFIGURASI LINK & KONTEN CAPTAIN REZTROID
+    // DATA MANAGEMENT & DYNAMIC RENDERER
     // ============================================================================
-    const REZTROID_CONFIG = {
-      // Bisa diisi link YouTube (contoh: 'https://www.youtube.com/watch?v=yRh-dzrI4Z4') atau link file .mp3
-      customMp3Url: '',
-      links: {
-        haven: 'https://instagram.com/heyreztroid/',
-        vault: 'https://wa.me/6281299961001?text=Halo%20Captain%20Reztroid,%20saya%20ingin%20tanya%20pricelist',
-        log: 'https://instagram.com/heyreztroid/',
-        signal: 'https://wa.me/6281299961001?text=Halo%20Captain%20Reztroid,%20saya%20ingin%20order'
+    let SITE_DATA = JSON.parse(JSON.stringify(DEFAULT_SITE_DATA));
+    try {
+      const savedDraft = localStorage.getItem('reztroid_site_draft_v1');
+      if (savedDraft) {
+        SITE_DATA = Object.assign({}, SITE_DATA, JSON.parse(savedDraft));
       }
-    };
+    } catch (e) {}
 
-    const PIRATE_ISLANDS = {
-      haven: {
-        id: 'haven',
-        name: 'About · Reztroid',
-        badge: 'Markas Utama',
-        icon: '🏴‍☠️',
-        shortTitle: 'About Reztroid',
-        shortDesc: 'Markas utama Captain Reztroid. Kenali layanan kreatif, kualitas pengerjaan, dan keunggulan armada kami.',
-        highlights: ['⚡ Proses Cepat', '💎 Kualitas Premium', '🛡️ Bergaransi'],
-        linkLabel: 'Profil Instagram',
-        externalUrl: REZTROID_CONFIG.links.haven,
-        html: `
-          <div class="space-y-5">
-            <div>
-              <h2 class="font-nautical text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">Captain Reztroid</h2>
-              <p class="text-stone-500 text-xs mt-1 font-medium">Digital Creative & Trusted Service Armada</p>
+    let PIRATE_ISLANDS = {};
+
+    function rebuildPirateIslandsFromData() {
+      // Update Header & Pins
+      document.getElementById('brand-title-text').textContent = SITE_DATA.brandName;
+      document.title = `${SITE_DATA.brandName} — Interactive Pirate Sea Portfolio`;
+      document.getElementById('ship-status-text').textContent = SITE_DATA.statusHint;
+
+      document.getElementById('pin-haven-main').textContent = SITE_DATA.pins.havenMain;
+      document.getElementById('pin-haven-sub').textContent = SITE_DATA.pins.havenSub;
+      document.getElementById('pin-vault-main').textContent = SITE_DATA.pins.vaultMain;
+      document.getElementById('pin-vault-sub').textContent = SITE_DATA.pins.vaultSub;
+      document.getElementById('pin-log-main').textContent = SITE_DATA.pins.logMain;
+      document.getElementById('pin-log-sub').textContent = SITE_DATA.pins.logSub;
+      document.getElementById('pin-signal-main').textContent = SITE_DATA.pins.signalMain;
+      document.getElementById('pin-signal-sub').textContent = SITE_DATA.pins.signalSub;
+
+      document.getElementById('nav-haven').textContent = SITE_DATA.pins.havenMain;
+      document.getElementById('nav-vault').textContent = SITE_DATA.pins.vaultMain;
+      document.getElementById('nav-log').textContent = SITE_DATA.pins.logMain;
+      document.getElementById('nav-signal').textContent = `${SITE_DATA.pins.signalMain} & ${SITE_DATA.pins.signalSub}`;
+
+      const h = SITE_DATA.haven;
+      const v = SITE_DATA.vault;
+      const l = SITE_DATA.log;
+      const s = SITE_DATA.signal;
+
+      PIRATE_ISLANDS = {
+        haven: {
+          id: 'haven',
+          name: h.name,
+          badge: h.badge,
+          icon: h.icon,
+          shortTitle: h.shortTitle,
+          shortDesc: h.shortDesc,
+          highlights: h.highlights,
+          linkLabel: h.linkLabel,
+          externalUrl: h.externalUrl,
+          html: `
+            <div class="space-y-5">
+              <div>
+                <h2 class="font-nautical text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">${h.modalTitle}</h2>
+                <p class="text-stone-500 text-xs mt-1 font-medium">${h.modalSubtitle}</p>
+              </div>
+              <p class="text-stone-700 leading-relaxed">${h.modalBody}</p>
+              <div class="grid grid-cols-3 gap-2.5 pt-1">
+                ${h.stats.map((st, idx) => `
+                  <div class="p-3.5 rounded-2xl bg-stone-100 border border-stone-200/70 text-center">
+                    <div class="font-nautical text-xl sm:text-2xl font-black ${idx === 1 ? 'text-amber-700' : 'text-stone-900'}">${st.value}</div>
+                    <div class="text-[10px] uppercase tracking-wider text-stone-500 mt-0.5 font-semibold">${st.label}</div>
+                  </div>
+                `).join('')}
+              </div>
+              <div class="pt-2 flex flex-wrap gap-2.5">
+                <button onclick="closeIslandModal(); sailToIsland('vault', true);" class="px-4 py-2.5 rounded-full bg-stone-900 text-white text-xs font-bold hover:opacity-90 transition">
+                  Lihat Pricelist →
+                </button>
+                <a href="${h.externalUrl}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-full bg-stone-200 text-stone-800 text-xs font-bold hover:bg-stone-300 transition">
+                  ${h.linkLabel} ↗
+                </a>
+              </div>
             </div>
-            <p class="text-stone-700 leading-relaxed">
-              Selamat datang di pelabuhan resmi <strong>Captain Reztroid</strong>. Kami menyediakan layanan digital berkualitas tinggi dengan pengerjaan cepat, transparan, dan bergaransi penuh bagi setiap klien.
-            </p>
-            <div class="grid grid-cols-3 gap-2.5 pt-1">
-              <div class="p-3.5 rounded-2xl bg-stone-100 border border-stone-200/70 text-center">
-                <div class="font-nautical text-xl sm:text-2xl font-black text-stone-900">500+</div>
-                <div class="text-[10px] uppercase tracking-wider text-stone-500 mt-0.5 font-semibold">Order Selesai</div>
+          `
+        },
+        vault: {
+          id: 'vault',
+          name: v.name,
+          badge: v.badge,
+          icon: v.icon,
+          shortTitle: v.shortTitle,
+          shortDesc: v.shortDesc,
+          highlights: v.highlights,
+          linkLabel: v.linkLabel,
+          externalUrl: v.externalUrl,
+          html: `
+            <div class="space-y-4">
+              <div>
+                <h2 class="font-nautical text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">${v.modalTitle}</h2>
+                <p class="text-stone-500 text-xs mt-1 font-medium">${v.modalSubtitle}</p>
               </div>
-              <div class="p-3.5 rounded-2xl bg-stone-100 border border-stone-200/70 text-center">
-                <div class="font-nautical text-xl sm:text-2xl font-black text-amber-700">4.9★</div>
-                <div class="text-[10px] uppercase tracking-wider text-stone-500 mt-0.5 font-semibold">Rating Klien</div>
-              </div>
-              <div class="p-3.5 rounded-2xl bg-stone-100 border border-stone-200/70 text-center">
-                <div class="font-nautical text-xl sm:text-2xl font-black text-stone-900">24/7</div>
-                <div class="text-[10px] uppercase tracking-wider text-stone-500 mt-0.5 font-semibold">Fast Respon</div>
+              <div class="space-y-3">
+                ${v.packages.map(pkg => `
+                  <div class="p-4 rounded-2xl ${pkg.featured ? 'bg-amber-500/10 border-2 border-amber-600/40' : 'bg-white border border-stone-200'} flex items-center justify-between gap-3">
+                    <div>
+                      <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${pkg.featured ? 'bg-amber-600 text-white' : 'bg-stone-100 text-stone-600'}">${pkg.tag}</span>
+                      <h4 class="font-bold text-stone-900 text-base mt-1">${pkg.title}</h4>
+                      <p class="text-xs text-stone-600 mt-0.5">${pkg.desc}</p>
+                    </div>
+                    <div class="text-right shrink-0">
+                      <div class="font-nautical text-xl font-black ${pkg.featured ? 'text-amber-800' : 'text-amber-700'}">${pkg.price}</div>
+                      <a href="${pkg.url}" target="_blank" rel="noopener noreferrer" class="inline-block mt-1 text-[11px] font-bold text-stone-900 underline">${pkg.linkText}</a>
+                    </div>
+                  </div>
+                `).join('')}
               </div>
             </div>
-            <div class="pt-2 flex flex-wrap gap-2.5">
-              <button onclick="closeIslandModal(); sailToIsland('vault', true);" class="px-4 py-2.5 rounded-full bg-stone-900 text-white text-xs font-bold hover:opacity-90 transition">
-                Lihat Pricelist →
-              </button>
-              <a href="${REZTROID_CONFIG.links.haven}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-full bg-stone-200 text-stone-800 text-xs font-bold hover:bg-stone-300 transition">
-                Kunjungi Instagram ↗
-              </a>
+          `
+        },
+        log: {
+          id: 'log',
+          name: l.name,
+          badge: l.badge,
+          icon: l.icon,
+          shortTitle: l.shortTitle,
+          shortDesc: l.shortDesc,
+          highlights: l.highlights,
+          linkLabel: l.linkLabel,
+          externalUrl: l.externalUrl,
+          html: `
+            <div class="space-y-4">
+              <div>
+                <h2 class="font-nautical text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">${l.modalTitle}</h2>
+                <p class="text-stone-500 text-xs mt-1 font-medium">${l.modalSubtitle}</p>
+              </div>
+              <div class="space-y-3">
+                ${l.reviews.map(rev => `
+                  <div class="p-4 rounded-2xl bg-white border border-stone-200">
+                    <div class="flex items-center justify-between">
+                      <span class="font-bold text-stone-900 text-xs">${rev.name}</span>
+                      <span class="text-amber-500 text-xs">${rev.stars}</span>
+                    </div>
+                    <p class="text-xs text-stone-600 mt-1.5 leading-relaxed">${rev.text}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `
+        },
+        signal: {
+          id: 'signal',
+          name: s.name,
+          badge: s.badge,
+          icon: s.icon,
+          shortTitle: s.shortTitle,
+          shortDesc: s.shortDesc,
+          highlights: s.highlights,
+          linkLabel: s.linkLabel,
+          externalUrl: s.externalUrl,
+          html: `
+            <div class="space-y-4">
+              <div>
+                <h2 class="font-nautical text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">${s.modalTitle}</h2>
+                <p class="text-stone-500 text-xs mt-1 font-medium">${s.modalSubtitle}</p>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                ${s.contacts.map((ct, idx) => `
+                  <a href="${ct.url}" target="_blank" rel="noopener noreferrer" class="p-4 rounded-2xl ${ct.colorClass} flex items-center justify-between hover:opacity-95 transition">
+                    <div>
+                      <div class="text-[10px] uppercase tracking-wider opacity-80 font-bold">${ct.badge}</div>
+                      <div class="font-bold text-base mt-0.5">${ct.title}</div>
+                    </div>
+                    <i data-lucide="${idx === 0 ? 'message-circle' : 'external-link'}" class="w-5 h-5"></i>
+                  </a>
+                `).join('')}
+              </div>
+            </div>
+          `
+        }
+      };
+    }
+
+    // ============================================================================
+    // SECRET ADMIN PANEL LOGIC (5x TAP LOGO OR ?admin=1)
+    // ============================================================================
+    let logoTapCount = 0;
+    let logoTapTimer = null;
+    let currentAdminTab = 'general';
+
+    function handleBrandLogoClick() {
+      sailToIsland('haven', true);
+      logoTapCount++;
+      clearTimeout(logoTapTimer);
+      logoTapTimer = setTimeout(() => { logoTapCount = 0; }, 1500);
+
+      if (logoTapCount >= 5) {
+        logoTapCount = 0;
+        openAdminTrigger();
+      }
+    }
+
+    function openAdminTrigger() {
+      if (isAdminUnlocked) {
+        openAdminEditor();
+        return;
+      }
+      document.getElementById('admin-pin-input').value = '';
+      document.getElementById('admin-pin-error').classList.add('hidden');
+      const modal = document.getElementById('admin-pin-modal');
+      modal.classList.remove('pointer-events-none', 'opacity-0');
+      modal.classList.add('pointer-events-auto', 'opacity-100');
+      setTimeout(() => document.getElementById('admin-pin-input').focus(), 100);
+    }
+
+    function closeAdminPinModal() {
+      const modal = document.getElementById('admin-pin-modal');
+      modal.classList.add('pointer-events-none', 'opacity-0');
+      modal.classList.remove('pointer-events-auto', 'opacity-100');
+    }
+
+    function verifyAdminPin() {
+      const input = document.getElementById('admin-pin-input').value.trim();
+      if (input === SITE_DATA.adminPin) {
+        isAdminUnlocked = true;
+        closeAdminPinModal();
+        openAdminEditor();
+      } else {
+        document.getElementById('admin-pin-error').classList.remove('hidden');
+      }
+    }
+
+    function openAdminEditor() {
+      const modal = document.getElementById('admin-editor-modal');
+      modal.classList.remove('pointer-events-none', 'opacity-0');
+      modal.classList.add('pointer-events-auto', 'opacity-100');
+      switchAdminTab(currentAdminTab);
+      lucide.createIcons();
+    }
+
+    function closeAdminEditor() {
+      const modal = document.getElementById('admin-editor-modal');
+      modal.classList.add('pointer-events-none', 'opacity-0');
+      modal.classList.remove('pointer-events-auto', 'opacity-100');
+    }
+
+    function switchAdminTab(tab) {
+      currentAdminTab = tab;
+      document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-admintab') === tab) {
+          btn.className = 'admin-tab-btn px-3 py-1.5 rounded-full bg-stone-900 text-white whitespace-nowrap';
+        } else {
+          btn.className = 'admin-tab-btn px-3 py-1.5 rounded-full bg-white text-stone-700 whitespace-nowrap';
+        }
+      });
+
+      const body = document.getElementById('admin-editor-body');
+      if (tab === 'general') {
+        body.innerHTML = `
+          <div class="space-y-3">
+            <div class="p-3.5 rounded-2xl bg-white border border-stone-200 space-y-3">
+              <h4 class="font-bold text-stone-900 text-sm">Pengaturan Utama & Keamanan</h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-semibold text-stone-600 mb-1">Nama Brand / Kapten</label>
+                  <input id="adm-brand" type="text" value="${escapeHtml(SITE_DATA.brandName)}" class="w-full px-3 py-2 rounded-xl border border-stone-300">
+                </div>
+                <div>
+                  <label class="block font-semibold text-stone-600 mb-1">PIN Admin Rahasia</label>
+                  <input id="adm-pin" type="text" value="${escapeHtml(SITE_DATA.adminPin)}" class="w-full px-3 py-2 rounded-xl border border-stone-300 font-mono">
+                </div>
+              </div>
+              <div>
+                <label class="block font-semibold text-stone-600 mb-1">Teks Petunjuk Status Atas</label>
+                <input id="adm-status" type="text" value="${escapeHtml(SITE_DATA.statusHint)}" class="w-full px-3 py-2 rounded-xl border border-stone-300">
+              </div>
+              <div>
+                <label class="block font-semibold text-stone-600 mb-1">Link Musik MP3 Langsung (Kosongkan = Sea Shanty Bawaan)</label>
+                <input id="adm-mp3" type="text" placeholder="https://example.com/lagu-bajak-laut.mp3" value="${escapeHtml(SITE_DATA.customMp3Url)}" class="w-full px-3 py-2 rounded-xl border border-stone-300">
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-white border border-stone-200 space-y-3">
+              <h4 class="font-bold text-stone-900 text-sm">Label Pin di Atas 4 Pulau</h4>
+              <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block text-stone-500 mb-1">Pulau 1 (Utama / Sub)</label>
+                  <div class="flex gap-1.5">
+                    <input id="adm-pin-h1" type="text" value="${escapeHtml(SITE_DATA.pins.havenMain)}" class="w-1/2 px-2.5 py-1.5 rounded-lg border border-stone-300">
+                    <input id="adm-pin-h2" type="text" value="${escapeHtml(SITE_DATA.pins.havenSub)}" class="w-1/2 px-2.5 py-1.5 rounded-lg border border-stone-300">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-stone-500 mb-1">Pulau 2 (Utama / Sub)</label>
+                  <div class="flex gap-1.5">
+                    <input id="adm-pin-v1" type="text" value="${escapeHtml(SITE_DATA.pins.vaultMain)}" class="w-1/2 px-2.5 py-1.5 rounded-lg border border-stone-300">
+                    <input id="adm-pin-v2" type="text" value="${escapeHtml(SITE_DATA.pins.vaultSub)}" class="w-1/2 px-2.5 py-1.5 rounded-lg border border-stone-300">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-stone-500 mb-1">Pulau 3 (Utama / Sub)</label>
+                  <div class="flex gap-1.5">
+                    <input id="adm-pin-l1" type="text" value="${escapeHtml(SITE_DATA.pins.logMain)}" class="w-1/2 px-2.5 py-1.5 rounded-lg border border-stone-300">
+                    <input id="adm-pin-l2" type="text" value="${escapeHtml(SITE_DATA.pins.logSub)}" class="w-1/2 px-2.5 py-1.5 rounded-lg border border-stone-300">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-stone-500 mb-1">Pulau 4 (Utama / Sub)</label>
+                  <div class="flex gap-1.5">
+                    <input id="adm-pin-s1" type="text" value="${escapeHtml(SITE_DATA.pins.signalMain)}" class="w-1/2 px-2.5 py-1.5 rounded-lg border border-stone-300">
+                    <input id="adm-pin-s2" type="text" value="${escapeHtml(SITE_DATA.pins.signalSub)}" class="w-1/2 px-2.5 py-1.5 rounded-lg border border-stone-300">
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        `
-      },
-      vault: {
-        id: 'vault',
-        name: 'Pricelist · Katalog',
-        badge: 'Katalog Harga',
-        icon: '💰',
-        shortTitle: 'Pricelist & Paket',
-        shortDesc: 'Daftar harga lengkap layanan Captain Reztroid. Pilih paket sesuai kebutuhanmu dengan harga transparan.',
-        highlights: ['📦 Paket Basic', '🔥 Paket Pro Fleet', '👑 Custom Order'],
-        linkLabel: 'Tanya / Order WA',
-        externalUrl: REZTROID_CONFIG.links.vault,
-        html: `
-          <div class="space-y-4">
-            <div>
-              <h2 class="font-nautical text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">Pricelist Layanan</h2>
-              <p class="text-stone-500 text-xs mt-1 font-medium">Pilih paket layanan terbaik dari Captain Reztroid</p>
-            </div>
-            <div class="space-y-3">
-              <div class="p-4 rounded-2xl bg-white border border-stone-200 flex items-center justify-between gap-3">
-                <div>
-                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-stone-100 text-stone-600">Starter</span>
-                  <h4 class="font-bold text-stone-900 text-base mt-1">Paket Basic Corsair</h4>
-                  <p class="text-xs text-stone-500 mt-0.5">Pengerjaan reguler, 2x revisi minor, file siap pakai.</p>
-                </div>
-                <div class="text-right shrink-0">
-                  <div class="font-nautical text-xl font-black text-amber-700">Rp 50K</div>
-                  <a href="${REZTROID_CONFIG.links.vault}" target="_blank" class="inline-block mt-1 text-[11px] font-bold text-stone-900 underline">Pesan →</a>
-                </div>
-              </div>
-
-              <div class="p-4 rounded-2xl bg-amber-500/10 border-2 border-amber-600/40 flex items-center justify-between gap-3">
-                <div>
-                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-600 text-white">Best Seller</span>
-                  <h4 class="font-bold text-stone-900 text-base mt-1">Paket Captain Fleet</h4>
-                  <p class="text-xs text-stone-600 mt-0.5">Prioritas ekspres, full garansi & revisi, bonus eksklusif.</p>
-                </div>
-                <div class="text-right shrink-0">
-                  <div class="font-nautical text-xl font-black text-amber-800">Rp 150K</div>
-                  <a href="${REZTROID_CONFIG.links.vault}" target="_blank" class="inline-block mt-1 text-[11px] font-bold text-amber-900 underline">Pesan →</a>
-                </div>
-              </div>
-
-              <div class="p-4 rounded-2xl bg-white border border-stone-200 flex items-center justify-between gap-3">
-                <div>
-                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-stone-900 text-amber-400">VIP Custom</span>
-                  <h4 class="font-bold text-stone-900 text-base mt-1">Paket Admiral Full Custom</h4>
-                  <p class="text-xs text-stone-500 mt-0.5">Spesifikasi khusus sesuai request dari awal hingga tuntas.</p>
-                </div>
-                <div class="text-right shrink-0">
-                  <div class="font-nautical text-xl font-black text-stone-900">Rp 300K+</div>
-                  <a href="${REZTROID_CONFIG.links.vault}" target="_blank" class="inline-block mt-1 text-[11px] font-bold text-stone-900 underline">Pesan →</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        `
-      },
-      log: {
-        id: 'log',
-        name: 'Testimoni · Review',
-        badge: 'Bukti & Review',
-        icon: '⭐',
-        shortTitle: 'Testimoni Pelanggan',
-        shortDesc: 'Kumpulan ulasan asli dan bukti kepuasan pelanggan yang telah berlayar bersama Captain Reztroid.',
-        highlights: ['⭐ 100% Trusted', '💬 Review Asli', '📸 Bukti Transaksi'],
-        linkLabel: 'Lihat Bukti Lengkap',
-        externalUrl: REZTROID_CONFIG.links.log,
-        html: `
-          <div class="space-y-4">
-            <div>
-              <h2 class="font-nautical text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">Testimoni Pelanggan</h2>
-              <p class="text-stone-500 text-xs mt-1 font-medium">Apa kata mereka tentang layanan Captain Reztroid</p>
-            </div>
-            <div class="space-y-3">
-              <div class="p-4 rounded-2xl bg-white border border-stone-200">
-                <div class="flex items-center justify-between">
-                  <span class="font-bold text-stone-900 text-xs">Raka Pratama</span>
-                  <span class="text-amber-500 text-xs">★★★★★</span>
-                </div>
-                <p class="text-xs text-stone-600 mt-1.5 leading-relaxed">"Gila sih pengerjaan cepet banget, admin ramah dan hasilnya jauh di atas ekspektasi. Recommended banget sama Captain Reztroid!"</p>
-              </div>
-              <div class="p-4 rounded-2xl bg-white border border-stone-200">
-                <div class="flex items-center justify-between">
-                  <span class="font-bold text-stone-900 text-xs">Nadia K.</span>
-                  <span class="text-amber-500 text-xs">★★★★★</span>
-                </div>
-                <p class="text-xs text-stone-600 mt-1.5 leading-relaxed">"Udah langganan 3 kali di sini nggak pernah kecewa. Harga terjangkau tapi kualitasnya beneran kelas kapten."</p>
-              </div>
-              <div class="p-4 rounded-2xl bg-white border border-stone-200">
-                <div class="flex items-center justify-between">
-                  <span class="font-bold text-stone-900 text-xs">Dimas Saputra</span>
-                  <span class="text-amber-500 text-xs">★★★★★</span>
-                </div>
-                <p class="text-xs text-stone-600 mt-1.5 leading-relaxed">"Fast respon meskipun chat malam-malam. Revisi langsung dikerjain saat itu juga. Mantap Reztroid!"</p>
-              </div>
-            </div>
-          </div>
-        `
-      },
-      signal: {
-        id: 'signal',
-        name: 'Order · Kontak',
-        badge: 'Jalur Cepat',
-        icon: '🧭',
-        shortTitle: 'Order & Kontak',
-        shortDesc: 'Siap memesan atau ingin konsultasi gratis dulu? Hubungi Captain Reztroid langsung lewat WhatsApp atau sosial media.',
-        highlights: ['📱 WhatsApp Aktif', '📸 DM Instagram', '⚡ Respon Instan'],
-        linkLabel: 'Chat WhatsApp',
-        externalUrl: REZTROID_CONFIG.links.signal,
-        html: `
-          <div class="space-y-4">
-            <div>
-              <h2 class="font-nautical text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">Hubungi Captain Reztroid</h2>
-              <p class="text-stone-500 text-xs mt-1 font-medium">Klik salah satu jalur komunikasi resmi di bawah ini</p>
-            </div>
+        `;
+      } else if (tab === 'about') {
+        const h = SITE_DATA.haven;
+        body.innerHTML = `
+          <div class="p-3.5 rounded-2xl bg-white border border-stone-200 space-y-3">
+            <h4 class="font-bold text-stone-900 text-sm">Edit Pulau About</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <a href="${REZTROID_CONFIG.links.signal}" target="_blank" rel="noopener noreferrer" class="p-4 rounded-2xl bg-emerald-600 text-white flex items-center justify-between hover:opacity-95 transition">
-                <div>
-                  <div class="text-[10px] uppercase tracking-wider opacity-80 font-bold">Jalur Utama</div>
-                  <div class="font-bold text-base mt-0.5">WhatsApp Order</div>
+              <div>
+                <label class="block font-semibold text-stone-600 mb-1">Judul Kartu</label>
+                <input id="adm-h-title" type="text" value="${escapeHtml(h.shortTitle)}" class="w-full px-3 py-2 rounded-xl border border-stone-300">
+              </div>
+              <div>
+                <label class="block font-semibold text-stone-600 mb-1">Link Instagram / Profil</label>
+                <input id="adm-h-url" type="text" value="${escapeHtml(h.externalUrl)}" class="w-full px-3 py-2 rounded-xl border border-stone-300">
+              </div>
+            </div>
+            <div>
+              <label class="block font-semibold text-stone-600 mb-1">Deskripsi Singkat Kartu</label>
+              <textarea id="adm-h-sdesc" rows="2" class="w-full px-3 py-2 rounded-xl border border-stone-300">${escapeHtml(h.shortDesc)}</textarea>
+            </div>
+            <div>
+              <label class="block font-semibold text-stone-600 mb-1">Deskripsi Lengkap Modal</label>
+              <textarea id="adm-h-mbody" rows="3" class="w-full px-3 py-2 rounded-xl border border-stone-300">${escapeHtml(h.modalBody)}</textarea>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              ${h.stats.map((st, idx) => `
+                <div class="p-2 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+                  <input id="adm-h-sval-${idx}" type="text" value="${escapeHtml(st.value)}" class="w-full px-2 py-1 rounded border border-stone-300 font-bold text-center">
+                  <input id="adm-h-slbl-${idx}" type="text" value="${escapeHtml(st.label)}" class="w-full px-2 py-1 rounded border border-stone-300 text-center text-[11px]">
                 </div>
-                <i data-lucide="message-circle" class="w-5 h-5"></i>
-              </a>
-              <a href="${REZTROID_CONFIG.links.haven}" target="_blank" rel="noopener noreferrer" class="p-4 rounded-2xl bg-stone-900 text-white flex items-center justify-between hover:opacity-95 transition">
-                <div>
-                  <div class="text-[10px] uppercase tracking-wider opacity-80 font-bold">Katalog & Update</div>
-                  <div class="font-bold text-base mt-0.5">Instagram Resmi</div>
-                </div>
-                <i data-lucide="instagram" class="w-5 h-5"></i>
-              </a>
+              `).join('')}
             </div>
           </div>
-        `
+        `;
+      } else if (tab === 'pricelist') {
+        const v = SITE_DATA.vault;
+        body.innerHTML = `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="font-bold text-stone-900 text-sm">Daftar Paket Pricelist (Tiap Paket Bisa Beda Link!)</h4>
+              <button onclick="addAdminPackage()" class="px-3 py-1.5 rounded-full bg-stone-900 text-amber-400 font-bold text-xs">+ Tambah Paket</button>
+            </div>
+            <div class="space-y-3" id="adm-pkg-list">
+              ${v.packages.map((pkg, idx) => `
+                <div class="p-3.5 rounded-2xl bg-white border border-stone-200 space-y-2.5">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-amber-700">Paket #${idx + 1}</span>
+                    <div class="flex items-center gap-3">
+                      <label class="flex items-center gap-1 cursor-pointer">
+                        <input type="checkbox" id="adm-pkg-feat-${idx}" ${pkg.featured ? 'checked' : ''}>
+                        <span>Highlight Best Seller</span>
+                      </label>
+                      <button onclick="removeAdminPackage(${idx})" class="text-red-600 font-bold hover:underline">Hapus</button>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    <input id="adm-pkg-tag-${idx}" placeholder="Label (Starter)" value="${escapeHtml(pkg.tag)}" class="px-2.5 py-1.5 rounded-lg border border-stone-300">
+                    <input id="adm-pkg-title-${idx}" placeholder="Nama Paket" value="${escapeHtml(pkg.title)}" class="px-2.5 py-1.5 rounded-lg border border-stone-300">
+                    <input id="adm-pkg-price-${idx}" placeholder="Harga (Rp 50K)" value="${escapeHtml(pkg.price)}" class="px-2.5 py-1.5 rounded-lg border border-stone-300 font-bold">
+                  </div>
+                  <input id="adm-pkg-desc-${idx}" placeholder="Deskripsi singkat paket" value="${escapeHtml(pkg.desc)}" class="w-full px-2.5 py-1.5 rounded-lg border border-stone-300">
+                  <div class="grid grid-cols-3 gap-2">
+                    <input id="adm-pkg-ltxt-${idx}" placeholder="Teks Tombol" value="${escapeHtml(pkg.linkText)}" class="px-2.5 py-1.5 rounded-lg border border-stone-300">
+                    <input id="adm-pkg-url-${idx}" placeholder="Link Tujuan (https://...)" value="${escapeHtml(pkg.url)}" class="col-span-2 px-2.5 py-1.5 rounded-lg border border-stone-300 font-mono text-[11px]">
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } else if (tab === 'testimoni') {
+        const l = SITE_DATA.log;
+        body.innerHTML = `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="font-bold text-stone-900 text-sm">Daftar Testimoni Pelanggan</h4>
+              <button onclick="addAdminReview()" class="px-3 py-1.5 rounded-full bg-stone-900 text-amber-400 font-bold text-xs">+ Tambah Review</button>
+            </div>
+            <div class="space-y-2.5">
+              ${l.reviews.map((rev, idx) => `
+                <div class="p-3.5 rounded-2xl bg-white border border-stone-200 space-y-2">
+                  <div class="flex items-center justify-between gap-2">
+                    <input id="adm-rev-name-${idx}" placeholder="Nama Pelanggan" value="${escapeHtml(rev.name)}" class="w-1/2 px-2.5 py-1.5 rounded-lg border border-stone-300 font-bold">
+                    <input id="adm-rev-stars-${idx}" placeholder="★★★★★" value="${escapeHtml(rev.stars)}" class="w-1/3 px-2.5 py-1.5 rounded-lg border border-stone-300 text-amber-500">
+                    <button onclick="removeAdminReview(${idx})" class="text-red-600 font-bold">Hapus</button>
+                  </div>
+                  <textarea id="adm-rev-text-${idx}" rows="2" class="w-full px-2.5 py-1.5 rounded-lg border border-stone-300">${escapeHtml(rev.text)}</textarea>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } else if (tab === 'kontak') {
+        const s = SITE_DATA.signal;
+        body.innerHTML = `
+          <div class="space-y-3">
+            <div class="p-3.5 rounded-2xl bg-white border border-stone-200 space-y-2.5">
+              <h4 class="font-bold text-stone-900 text-sm">Link Utama Kartu Preview Kontak</h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <input id="adm-s-llbl" placeholder="Label Tombol" value="${escapeHtml(s.linkLabel)}" class="px-3 py-2 rounded-xl border border-stone-300">
+                <input id="adm-s-lurl" placeholder="URL WhatsApp" value="${escapeHtml(s.externalUrl)}" class="px-3 py-2 rounded-xl border border-stone-300 font-mono text-[11px]">
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <h4 class="font-bold text-stone-900 text-sm">Tombol Jalur Komunikasi (Di Dalam Modal Order)</h4>
+              <button onclick="addAdminContact()" class="px-3 py-1.5 rounded-full bg-stone-900 text-amber-400 font-bold text-xs">+ Tambah Tombol</button>
+            </div>
+            <div class="space-y-2.5">
+              ${s.contacts.map((ct, idx) => `
+                <div class="p-3.5 rounded-2xl bg-white border border-stone-200 space-y-2">
+                  <div class="flex items-center justify-between gap-2">
+                    <input id="adm-ct-badge-${idx}" placeholder="Sub-judul" value="${escapeHtml(ct.badge)}" class="w-1/3 px-2.5 py-1.5 rounded-lg border border-stone-300">
+                    <input id="adm-ct-title-${idx}" placeholder="Nama Tombol" value="${escapeHtml(ct.title)}" class="w-1/2 px-2.5 py-1.5 rounded-lg border border-stone-300 font-bold">
+                    <button onclick="removeAdminContact(${idx})" class="text-red-600 font-bold">Hapus</button>
+                  </div>
+                  <input id="adm-ct-url-${idx}" placeholder="https://..." value="${escapeHtml(ct.url)}" class="w-full px-2.5 py-1.5 rounded-lg border border-stone-300 font-mono text-[11px]">
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
       }
-    };
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function collectCurrentAdminTabInputs() {
+      if (currentAdminTab === 'general') {
+        SITE_DATA.brandName = document.getElementById('adm-brand').value;
+        SITE_DATA.adminPin = document.getElementById('adm-pin').value || '090925';
+        SITE_DATA.statusHint = document.getElementById('adm-status').value;
+        SITE_DATA.customMp3Url = document.getElementById('adm-mp3').value.trim();
+        SITE_DATA.pins = {
+          havenMain: document.getElementById('adm-pin-h1').value,
+          havenSub: document.getElementById('adm-pin-h2').value,
+          vaultMain: document.getElementById('adm-pin-v1').value,
+          vaultSub: document.getElementById('adm-pin-v2').value,
+          logMain: document.getElementById('adm-pin-l1').value,
+          logSub: document.getElementById('adm-pin-l2').value,
+          signalMain: document.getElementById('adm-pin-s1').value,
+          signalSub: document.getElementById('adm-pin-s2').value
+        };
+      } else if (currentAdminTab === 'about') {
+        SITE_DATA.haven.shortTitle = document.getElementById('adm-h-title').value;
+        SITE_DATA.haven.externalUrl = document.getElementById('adm-h-url').value;
+        SITE_DATA.haven.shortDesc = document.getElementById('adm-h-sdesc').value;
+        SITE_DATA.haven.modalBody = document.getElementById('adm-h-mbody').value;
+        SITE_DATA.haven.stats.forEach((st, idx) => {
+          st.value = document.getElementById(`adm-h-sval-${idx}`).value;
+          st.label = document.getElementById(`adm-h-slbl-${idx}`).value;
+        });
+      } else if (currentAdminTab === 'pricelist') {
+        SITE_DATA.vault.packages.forEach((pkg, idx) => {
+          pkg.featured = document.getElementById(`adm-pkg-feat-${idx}`).checked;
+          pkg.tag = document.getElementById(`adm-pkg-tag-${idx}`).value;
+          pkg.title = document.getElementById(`adm-pkg-title-${idx}`).value;
+          pkg.price = document.getElementById(`adm-pkg-price-${idx}`).value;
+          pkg.desc = document.getElementById(`adm-pkg-desc-${idx}`).value;
+          pkg.linkText = document.getElementById(`adm-pkg-ltxt-${idx}`).value;
+          pkg.url = document.getElementById(`adm-pkg-url-${idx}`).value;
+        });
+      } else if (currentAdminTab === 'testimoni') {
+        SITE_DATA.log.reviews.forEach((rev, idx) => {
+          rev.name = document.getElementById(`adm-rev-name-${idx}`).value;
+          rev.stars = document.getElementById(`adm-rev-stars-${idx}`).value;
+          rev.text = document.getElementById(`adm-rev-text-${idx}`).value;
+        });
+      } else if (currentAdminTab === 'kontak') {
+        SITE_DATA.signal.linkLabel = document.getElementById('adm-s-llbl').value;
+        SITE_DATA.signal.externalUrl = document.getElementById('adm-s-lurl').value;
+        SITE_DATA.signal.contacts.forEach((ct, idx) => {
+          ct.badge = document.getElementById(`adm-ct-badge-${idx}`).value;
+          ct.title = document.getElementById(`adm-ct-title-${idx}`).value;
+          ct.url = document.getElementById(`adm-ct-url-${idx}`).value;
+        });
+      }
+    }
+
+    function addAdminPackage() {
+      collectCurrentAdminTabInputs();
+      SITE_DATA.vault.packages.push({
+        tag: 'Baru',
+        title: 'Paket Layanan Baru',
+        desc: 'Deskripsi layanan baru kamu di sini.',
+        price: 'Rp 100K',
+        linkText: 'Pesan →',
+        url: 'https://wa.me/6281299961001',
+        featured: false
+      });
+      switchAdminTab('pricelist');
+    }
+
+    function removeAdminPackage(idx) {
+      collectCurrentAdminTabInputs();
+      SITE_DATA.vault.packages.splice(idx, 1);
+      switchAdminTab('pricelist');
+    }
+
+    function addAdminReview() {
+      collectCurrentAdminTabInputs();
+      SITE_DATA.log.reviews.push({
+        name: 'Pelanggan Baru',
+        stars: '★★★★★',
+        text: '"Pelayanan sangat memuaskan dan pengerjaan super cepat!"'
+      });
+      switchAdminTab('testimoni');
+    }
+
+    function removeAdminReview(idx) {
+      collectCurrentAdminTabInputs();
+      SITE_DATA.log.reviews.splice(idx, 1);
+      switchAdminTab('testimoni');
+    }
+
+    function addAdminContact() {
+      collectCurrentAdminTabInputs();
+      SITE_DATA.signal.contacts.push({
+        badge: 'Saluran Baru',
+        title: 'Link Tambahan',
+        url: 'https://instagram.com/heyreztroid/',
+        colorClass: 'bg-amber-600 text-white'
+      });
+      switchAdminTab('kontak');
+    }
+
+    function removeAdminContact(idx) {
+      collectCurrentAdminTabInputs();
+      SITE_DATA.signal.contacts.splice(idx, 1);
+      switchAdminTab('kontak');
+    }
+
+    function applyAdminChanges(showToast = false) {
+      collectCurrentAdminTabInputs();
+      try {
+        localStorage.setItem('reztroid_site_draft_v1', JSON.stringify(SITE_DATA));
+      } catch (e) {}
+      rebuildPirateIslandsFromData();
+      updateActiveNavUI(activeIslandId, PIRATE_ISLANDS[activeIslandId].name);
+      showPreviewCard(activeIslandId);
+      if (showToast) {
+        closeAdminEditor();
+        document.getElementById('ship-status-text').textContent = 'Perubahan disimpan! Klik Download index.html untuk update permanen.';
+      }
+    }
+
+    function resetDefaultSiteData() {
+      localStorage.removeItem('reztroid_site_draft_v1');
+      SITE_DATA = JSON.parse(JSON.stringify(DEFAULT_SITE_DATA));
+      rebuildPirateIslandsFromData();
+      switchAdminTab(currentAdminTab);
+      showPreviewCard(activeIslandId);
+    }
+
+    function downloadUpdatedHtml() {
+      collectCurrentAdminTabInputs();
+      rebuildPirateIslandsFromData();
+
+      // Clone current DOM and bake updated SITE_DATA into #site-data-script
+      const docClone = document.documentElement.cloneNode(true);
+      const dataScript = docClone.querySelector('#site-data-script');
+      if (dataScript) {
+        dataScript.textContent = `\n    const DEFAULT_SITE_DATA = ${JSON.stringify(SITE_DATA, null, 2)};\n  `;
+      }
+
+      // Reset transient modal classes in exported HTML
+      const adminModal = docClone.querySelector('#admin-editor-modal');
+      if (adminModal) {
+        adminModal.classList.add('pointer-events-none', 'opacity-0');
+        adminModal.classList.remove('pointer-events-auto', 'opacity-100');
+      }
+      const pinModal = docClone.querySelector('#admin-pin-modal');
+      if (pinModal) {
+        pinModal.classList.add('pointer-events-none', 'opacity-0');
+        pinModal.classList.remove('pointer-events-auto', 'opacity-100');
+      }
+
+      const fullHtml = '<!DOCTYPE html>\n' + docClone.outerHTML;
+      const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'index.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
 
     // ============================================================================
     // THREE.JS SCENE SETUP (RETINA HD & FULL MOBILE FIT)
@@ -1312,11 +1919,9 @@
     const shipModel = new THREE.Group();
     shipGroup.add(shipModel);
 
-    // Custom Tapered Bow Geometry Builder so the front of the ship seamlessly connects
     function createTaperedBowGeo(backWidth, frontWidth, height, length, bottomPinch = 0.72) {
       const geo = new THREE.BoxGeometry(backWidth, height, length, 1, 1, 1);
       const pos = geo.attributes.position;
-      const halfL = length / 2;
       for (let i = 0; i < pos.count; i++) {
         const z = pos.getZ(i);
         const y = pos.getY(i);
@@ -1357,7 +1962,6 @@
     hullTrim.position.y = 0.68;
     shipModel.add(hullTrim);
 
-    // Seamless Tapered V-Bow Hull Sections
     const bowLower = new THREE.Mesh(createTaperedBowGeo(1.32, 0.08, 0.45, 1.05, 0.75), materials.woodDark);
     bowLower.position.set(0, 0.26, 2.05);
     shipModel.add(bowLower);
@@ -1530,6 +2134,7 @@
 
     const keysPressed = {};
     window.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
       keysPressed[e.code] = true;
       if (e.code === 'Space' && document.activeElement === document.body) {
         e.preventDefault();
@@ -1871,38 +2476,29 @@
     }
 
     // ============================================================================
-    // AUTHENTIC PIRATE SEA SHANTY AUDIO SYNTHESIS (+ YOUTUBE / MP3 SUPPORT)
+    // AUTHENTIC PIRATE SEA SHANTY AUDIO SYNTHESIS (+ CUSTOM MP3 SUPPORT)
     // ============================================================================
     let audioCtx = null;
     let isPlayingBGM = false;
     let shantyTimer = null;
     let hasAutoStartedBGM = false;
     let customAudioEl = null;
-    let ytIframeEl = null;
 
-    function extractYouTubeId(url) {
-      if (!url) return null;
-      const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-      const match = url.match(regExp);
-      return (match && match[2].length === 11) ? match[2] : null;
-    }
-
-    // Classic Sea Shanty progression (D Minor / Dorian mode: D4, F4, G4, A4, C5, A4, G4, F4)
     const SHANTY_MELODY = [
-      { f: 293.66, dur: 0.35 }, // D4
-      { f: 349.23, dur: 0.35 }, // F4
-      { f: 392.00, dur: 0.70 }, // G4
-      { f: 440.00, dur: 0.35 }, // A4
-      { f: 523.25, dur: 0.70 }, // C5
-      { f: 440.00, dur: 0.35 }, // A4
-      { f: 392.00, dur: 0.35 }, // G4
-      { f: 349.23, dur: 0.70 }, // F4
-      { f: 392.00, dur: 0.35 }, // G4
-      { f: 440.00, dur: 0.35 }, // A4
-      { f: 392.00, dur: 0.35 }, // G4
-      { f: 349.23, dur: 0.35 }, // F4
-      { f: 329.63, dur: 0.35 }, // E4
-      { f: 293.66, dur: 1.05 }  // D4
+      { f: 293.66, dur: 0.35 },
+      { f: 349.23, dur: 0.35 },
+      { f: 392.00, dur: 0.70 },
+      { f: 440.00, dur: 0.35 },
+      { f: 523.25, dur: 0.70 },
+      { f: 440.00, dur: 0.35 },
+      { f: 392.00, dur: 0.35 },
+      { f: 349.23, dur: 0.70 },
+      { f: 392.00, dur: 0.35 },
+      { f: 440.00, dur: 0.35 },
+      { f: 392.00, dur: 0.35 },
+      { f: 349.23, dur: 0.35 },
+      { f: 329.63, dur: 0.35 },
+      { f: 293.66, dur: 1.05 }
     ];
     let shantyStep = 0;
 
@@ -1922,7 +2518,6 @@
       const note = SHANTY_MELODY[shantyStep % SHANTY_MELODY.length];
       shantyStep++;
 
-      // Lead Accordion / Fiddle synth voice (sawtooth + lowpass filter)
       const osc = audioCtx.createOscillator();
       const filter = audioCtx.createBiquadFilter();
       const gain = audioCtx.createGain();
@@ -1945,12 +2540,11 @@
       osc.start(now);
       osc.stop(now + note.dur);
 
-      // Bass drone accompaniment on beat 1 and 3
       if (shantyStep % 2 === 0) {
         const bassOsc = audioCtx.createOscillator();
         const bassGain = audioCtx.createGain();
         bassOsc.type = 'triangle';
-        bassOsc.frequency.setValueAtTime(146.83, now); // D3
+        bassOsc.frequency.setValueAtTime(146.83, now);
         bassGain.gain.setValueAtTime(0.001, now);
         bassGain.gain.linearRampToValueAtTime(0.08, now + 0.04);
         bassGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
@@ -1967,37 +2561,24 @@
       isPlayingBGM = !isPlayingBGM;
       const eq = document.getElementById('bgm-eq');
       const label = document.getElementById('audio-label');
-      const customUrl = (REZTROID_CONFIG.customMp3Url || '').trim();
-      const ytId = extractYouTubeId(customUrl);
+      const customUrl = (SITE_DATA.customMp3Url || '').trim();
 
       if (isPlayingBGM) {
         eq.classList.add('playing');
         label.textContent = 'Shanty On';
 
-        if (ytId) {
-          // Putar dari link YouTube di belakang layar
-          if (!ytIframeEl) {
-            ytIframeEl = document.createElement('iframe');
-            ytIframeEl.style.position = 'fixed';
-            ytIframeEl.style.width = '1px';
-            ytIframeEl.style.height = '1px';
-            ytIframeEl.style.bottom = '-10px';
-            ytIframeEl.style.opacity = '0.01';
-            ytIframeEl.style.pointerEvents = 'none';
-            ytIframeEl.allow = 'autoplay; encrypted-media';
-            document.body.appendChild(ytIframeEl);
-          }
-          ytIframeEl.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&loop=1&playlist=${ytId}&enablejsapi=1`;
-        } else if (customUrl) {
-          // Putar dari link file .mp3 langsung
-          if (!customAudioEl) {
+        if (customUrl) {
+          if (!customAudioEl || customAudioEl.src !== customUrl) {
             customAudioEl = new Audio(customUrl);
             customAudioEl.loop = true;
-            customAudioEl.volume = 0.6;
+            customAudioEl.volume = 0.65;
           }
-          customAudioEl.play().catch(() => {});
+          customAudioEl.play().catch(() => {
+            if (shantyTimer) clearInterval(shantyTimer);
+            playSeaShantyNote();
+            shantyTimer = setInterval(playSeaShantyNote, 380);
+          });
         } else {
-          // Putar Sea Shanty bawaan jika customMp3Url kosong
           if (shantyTimer) clearInterval(shantyTimer);
           playSeaShantyNote();
           shantyTimer = setInterval(playSeaShantyNote, 380);
@@ -2011,9 +2592,6 @@
         }
         if (customAudioEl) {
           customAudioEl.pause();
-        }
-        if (ytIframeEl) {
-          ytIframeEl.src = 'about:blank';
         }
       }
     }
@@ -2105,7 +2683,7 @@
             }
           } else {
             shipState.hasTarget = false;
-            document.getElementById('ship-status-text').textContent = 'Siap berlayar · Klik pulau atau air laut';
+            document.getElementById('ship-status-text').textContent = SITE_DATA.statusHint;
           }
         }
       }
@@ -2175,11 +2753,16 @@
     }
 
     window.onload = function () {
+      rebuildPirateIslandsFromData();
       lucide.createIcons();
       handleViewportResize();
       updateActiveNavUI('haven', PIRATE_ISLANDS.haven.name);
       showPreviewCard('haven');
       animate();
+
+      if (new URLSearchParams(window.location.search).get('admin') === '1') {
+        openAdminTrigger();
+      }
     };
   </script>
 </body>
